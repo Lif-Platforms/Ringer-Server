@@ -1,0 +1,17 @@
+host: 0.0.0.0
+
+test-ip: 127.0.0.1
+
+current_version: SNAPSHOT-3.0
+
+DAL: 1.449445608699771
+
+#email login
+client-id: 821q939xruo1pw600k3xfkufg
+
+client-secret: et520pqkktjsmn5c7ld43a7re
+
+acsess-token: AcSz4Qq9IeMfZbFnUZRhnoNKFYWmxO
+
+denied-plugins: 
+  - RingerAPI.py 
