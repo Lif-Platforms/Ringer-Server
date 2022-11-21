@@ -1,12 +1,9 @@
-
-import email
 from threading import Thread
-import colorama
 from colorama import Fore
 
-import RingerAPI as ringer
+import RingerPlugins.RingerAPI as ringer
 
-processes = [] 
+processes = [] #intended so the server knows when all processes has stopped running before shutting down
 
 global shutdown
 shutdown = False
@@ -27,11 +24,8 @@ try:
     from os.path import isfile, join
     from pydoc import cli
     from random import randint, randrange
-
     import yaml
-    print(sys.executable)
     from subprocess import PIPE, STDOUT, Popen
-
     from nylas import APIClient
 except Exception as e:
     print(Fore.RED + "Failed to import libraries! Exception:", e)
@@ -40,10 +34,8 @@ except Exception as e:
 global serverOnline
 serverOnline = False
 
-Swares = ["shit", "fuck", "bitch", "gay", "ass", "dick", "pussy ", 'hell ', "crap", "nigger ", "douchebag", "penis", "sod ", 'bugger', "git", "arse", "bint", "munter", "minger", "balls", "arsehole", "pissed", "bollocks", "bellend", "tit", "fanny", "snatch", "clunge", "gash", "prick", "twat", "punani", "minge", "cock", "bastard", "wanker", "cunt", "hoe"]
+Swares = ["shit", "fuck", "bitch", "gay", "ass", "dick", "pussy ", 'hell ', "crap", "nigger ", "douchebag", "penis", "sod ", 'bugger', "arse", "bint", "munter", "minger", "balls", "arsehole", "pissed", "bollocks", "bellend", "tit", "fanny", "snatch", "clunge", "gash", "prick", "twat", "punani", "minge", "cock", "bastard", "wanker", "cunt", "hoe"]
  
-
-
 global current_time
 
 global kickUser
@@ -72,7 +64,6 @@ port = 20200
 
 global tries
 tries = 0
-
 
 def connect():
     global server 
