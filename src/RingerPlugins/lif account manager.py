@@ -1,5 +1,4 @@
 from concurrent.futures import thread
-from glob import glob
 import os
 import socket
 import sqlite3
@@ -49,8 +48,7 @@ def handle(client, username):
                 name = client.recv(1024).decode('ascii')
 
                 insertName = name.replace("ADD_DM", "")
-
-                    
+ 
                 print("Name: " + insertName)
 
                 conn2 = sqlite3.connect('account.db')
@@ -60,8 +58,7 @@ def handle(client, username):
                 items = c2.fetchall()
 
                 contacts = []
-
-
+                
                 for item in items:
                     findUser = item[0]
                     print(item)
@@ -72,14 +69,20 @@ def handle(client, username):
                             
                 contacts.append(insertName)
                 print(contacts)
+                
+                c2.execute("UPDATE accounts SET contacts = " + contacts + " WHERE Username = " + username)
 
-                c2.execute(f"""UPDATE accounts SET contacts = '{str(contacts)}'
-                                WHERE Username = '{username}'
-                """)
-
+                '''
+                sql =  UPDATE tasks
+                        SET contacts = ? 
+                        WHERE Username = ?
+          
+                c2.execute(sql, (contacts, username))
+                conn2.commit()
+                '''
                 print('updated dm in contacts')
 
-                conn2.commit()
+                c2.commit()
 
                 conn2.close()
 
@@ -89,44 +92,47 @@ def handle(client, username):
 
 def recive():
     while True: 
-        client, address = server.accept()
-        conn = sqlite3.connect('account.db')
-        c = conn.cursor()
+        try:
+            client, address = server.accept()
+            conn = sqlite3.connect('account.db')
+            c = conn.cursor()
 
-        print(client)
-        ringer.log(f"Connected with {str(address)}")
-        #retrieve username 
-        client.send("USERNAME".encode('ascii'))
-        username = client.recv(1024).decode('ascii')
-        #retrieve password
-        client.send("PASSWORD".encode('ascii'))
-        password = client.recv(1024).decode('ascii')
+            print(client)
+            ringer.log(f"Connected with {str(address)}")
+            #retrieve username 
+            client.send("USERNAME".encode('ascii'))
+            username = client.recv(1024).decode('ascii')
+            #retrieve password
+            client.send("PASSWORD".encode('ascii'))
+            password = client.recv(1024).decode('ascii')
 
-        c.execute("SELECT * FROM accounts")
-        items = c.fetchall()
+            c.execute("SELECT * FROM accounts")
+            items = c.fetchall()
 
-        foundAccount = False
+            foundAccount = False
 
-        for item in items:
-            print('seraching...')
-            user = item[0]
-            print(user)
-            passwrd = item[1]
-            print(passwrd)
+            for item in items:
+                print('seraching...')
+                user = item[0]
+                print(user)
+                passwrd = item[1]
+                print(passwrd)
 
-            if username == user and password == passwrd:
-                print("found account")
-                foundAccount = True
-                break
+                if username == user and password == passwrd:
+                    print("found account")
+                    foundAccount = True
+                    break
 
-        if foundAccount == True:
-            client.send("LOGIN_GOOD".encode('ascii'))
-            handleThread = threading.Thread(target=handle, args=(client, username))
-            handleThread.start()
-            conn.close()
-        else:
-            client.send('ACCOUNT_NOT_FOUND'.encode('ascii'))
-            conn.close()
+            if foundAccount == True:
+                client.send("LOGIN_GOOD".encode('ascii'))
+                handleThread = threading.Thread(target=handle, args=(client, username))
+                handleThread.start()
+                conn.close()
+            else:
+                client.send('ACCOUNT_NOT_FOUND'.encode('ascii'))
+                conn.close()
+        except Exception as e:
+            ringer.error(e)
 
 recive()
 

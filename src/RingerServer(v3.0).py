@@ -162,7 +162,6 @@ def handle(client, nickname, address, c, conn):
         client.send(f'''
     You are chatting with: {str(nicknames)[2:-2]}.
     '''.encode('ascii'))
-    socket.setdefaulttimeout(5) 
     dmRequest = False
 
     while True:
@@ -241,11 +240,6 @@ def recive(conn, c):
     global shutdown
     processes.append("Receive")
     while True:
-        if shutdown == True:
-            processes.remove('Receive')
-            server.close() 
-            ringer.log("Shut down main receive thread")
-            break
         try:
             client, address = server.accept()
             print(client)
@@ -412,7 +406,5 @@ def recive(conn, c):
                 client.close()
             
         except Exception as e:
-            ringer.error(f'LOST CONNECTION! Trying to connect... Exception: {e}') 
-            serverOnline = False
-            connect() 
+            ringer.error(e)
 recive(conn, c) 

@@ -7,11 +7,11 @@ current_version: SNAPSHOT-3.0
 DAL: 1.449445608699771
 
 #email login
-client-id: 821q939xruo1pw600k3xfkufg
+client-id: 
 
-client-secret: et520pqkktjsmn5c7ld43a7re
+client-secret: 
 
-acsess-token: AcSz4Qq9IeMfZbFnUZRhnoNKFYWmxO
+acsess-token: 
 
 denied-plugins: 
   - RingerAPI.py 
