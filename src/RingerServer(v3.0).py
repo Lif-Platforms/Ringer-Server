@@ -148,7 +148,7 @@ ringer.log('Server Online!')
 
 def brodcast(message):
     for client in clients:
-        client.send(message) 
+        client.send(message)
 
 def handle(client, nickname, address, c, conn):
     global index
@@ -182,7 +182,11 @@ def handle(client, nickname, address, c, conn):
             if user := users.get(username):
                 print(user)
                 if message:
-                    user.send(message.encode("ascii"))
+                    res = message.split(' ', 1)[1]
+                    send = f'''
+{res}
+                    '''
+                    user.send(send.encode("ascii"))
             else:
                client.send("user no exist".encode('ascii'))
             #brodcast(message)
@@ -276,14 +280,15 @@ def recive(conn, c):
 
                 for item in items:
                     findUser = item[0]
+                    print(item)
                     if findUser == username:
                         client.send('ERROR_ACOUNT_EXSISTING'.encode('ascii'))
                         continueCreation = False  
                         break
 
                 for item in items:
-                    findUser = item[2]
-                    if findUser == email:
+                    findEmail = item[2]
+                    if findEmail == email:
                         client.send('ERROR_ACOUNT_EXSISTING'.encode('ascii'))
                         continueCreation = False  
                         break

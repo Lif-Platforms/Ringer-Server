@@ -5,6 +5,7 @@ import sqlite3
 import threading
 import RingerAPI as ringer
 import time
+import json
 
 ringer.setAppName("Account Manager") 
 ringer.log("Server Starting...")
@@ -51,14 +52,18 @@ def handle(client, username):
  
                 print("Name: " + insertName)
 
+                '''
                 conn2 = sqlite3.connect('account.db')
                 c2 = conn2.cursor()
 
                 c2.execute("SELECT * FROM accounts")
                 items = c2.fetchall()
 
-                contacts = []
+                conn2.close()
+                '''
+                #contacts = []
                 
+                '''
                 for item in items:
                     findUser = item[0]
                     print(item)
@@ -66,29 +71,57 @@ def handle(client, username):
                         contacts = list(item[3])
                         print("found account")
                         break
-                            
-                contacts.append(insertName)
+                '''
+                file = open("contacts.json", "r")
+                print("opened file")
+                content = file.read()
+                print(content)
+                data = json.loads(content)
+                print(data)
+                extractContacts = data[username]   
+                contacts = list(extractContacts)
+                for i in contacts:
+                    if i == "[":
+                        contacts.remove(i)
+                    if i == "]":
+                        contacts.remove(i)
+                contacts.append(str(insertName))
                 print(contacts)
-                
-                c2.execute("UPDATE accounts SET contacts = " + contacts + " WHERE Username = " + username)
+                file.close() 
 
+                print(contacts)
+                print(username)
+
+                #conn3 = sqlite3.connect('account.db')
+                #c3 = conn3.cursor()
+                #print("connected to database")
+                
                 '''
-                sql =  UPDATE tasks
-                        SET contacts = ? 
-                        WHERE Username = ?
-          
-                c2.execute(sql, (contacts, username))
-                conn2.commit()
+                c3.execute(f"""UPDATE accounts SET contacts = '{str(contacts)}'
+                            WHERE Username = '{username}'""")
                 '''
+
+                with open("contacts.json", "r") as file:
+                    content = file.read() 
+                    json_ = json.loads(content)
+                    file.close() 
+                with open("contacts.json", "w") as file:
+                    json_[username] = contacts
+                    file.write(json.dumps(json_))
+                    file.close() 
                 print('updated dm in contacts')
 
-                c2.commit()
-
-                conn2.close()
-
                 client.send('SUCCESS!'.encode('ascii'))
-        except:
+
+                #c3.commit()
+
+                #conn3.close()
+
+                
+        except Exception as e:
+            print(e)
             client.close()
+            break
 
 def recive():
     while True: 
