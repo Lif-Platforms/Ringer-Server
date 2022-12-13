@@ -78,13 +78,19 @@ def handle(client, username):
                 print(content)
                 data = json.loads(content)
                 print(data)
+                if username not in data:
+                    data.update({username:"[]"})
                 extractContacts = data[username]   
                 contacts = list(extractContacts)
-                for i in contacts:
-                    if i == "[":
-                        contacts.remove(i)
-                    if i == "]":
-                        contacts.remove(i)
+                def scanDatabase():
+                    for i in contacts:
+                        if i == "[":
+                            contacts.remove(i)
+                            scanDatabase()
+                        if i == "]":
+                            contacts.remove(i)
+                            scanDatabase()
+                scanDatabase()
                 contacts.append(str(insertName))
                 print(contacts)
                 file.close() 
