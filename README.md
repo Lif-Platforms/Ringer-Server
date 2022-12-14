@@ -9,8 +9,8 @@ Ringer server requires little setup. all you need is to clone the repository and
 
 ### Config
 
-host: the address ringer will bind to. 
+**host:** the address ringer will bind to. 
 
-email info: ringer server sends emails as part of the accoubt recovery system. To do this we use nylas. To get this feature to work, please sign up for nylas and enter your info in the email info section in the config.
+**email info:** ringer server sends emails as part of the accoubt recovery system. To do this we use nylas. To get this feature to work, please sign up for nylas and enter your info in the email info section in the config.
 
-denied plugins: ringer plugins are python files that will be executed as a subprosses when the server starts. you can disable plugins by addding the file name into the config. Example: myPlugin.py
+**denied plugins:** ringer plugins are python files that will be executed as a subprosses when the server starts. you can disable plugins by addding the file name into the config. Example: myPlugin.py
