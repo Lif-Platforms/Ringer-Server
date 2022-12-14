@@ -3,3 +3,6 @@ Ringer server is the server code for the Ringer messaging app. The code here is 
 
 # Client Code
 Ringers client code is located in another repository: https://github.com/Superior126/Ringer-Client
+
+# Instalation and Use
+Ringer server requires little setup. all you need is to clone the repository and install all of the required libraries. Also make sure you have the configuration correct. 
