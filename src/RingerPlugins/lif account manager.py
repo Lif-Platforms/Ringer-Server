@@ -123,13 +123,19 @@ def handle(client, username):
 
                 #conn3.close()
 
-                
+            if message == "LIST_DM":
+                with open("contacts.json", "r") as file:
+                    content = file.read() 
+                    json_ = json.loads(content)
+                    file.close() 
+                print(content)
+                client.send(str(json_[username]).encode('ascii'))
         except Exception as e:
-            print(e)
+            print("ERROR: " + str(e))
             client.close()
             break
 
-def recive():
+def recive(): #handles receiving connections and login
     while True: 
         try:
             client, address = server.accept()

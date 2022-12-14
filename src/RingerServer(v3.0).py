@@ -3,7 +3,7 @@ from colorama import Fore
 
 import RingerPlugins.RingerAPI as ringer
 
-processes = [] #intended so the server knows when all processes has stopped running before shutting down
+processes = [] #intended so the server knows when all processes has stopped running before shutting down (unused)
 
 global shutdown
 shutdown = False
