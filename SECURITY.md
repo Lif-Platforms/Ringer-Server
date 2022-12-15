@@ -9,4 +9,4 @@
 
 ## Reporting a Vulnerability
 
-To report a security issue, Use the issues tab and submit a new issue. 
+To report a security issue, Head to the security tab, click "Advisorys", Click "Draft New Advisory"  
