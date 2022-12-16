@@ -129,7 +129,12 @@ def handle(client, username):
                     json_ = json.loads(content)
                     file.close() 
                 print(content)
-                client.send(str(json_[username]).encode('ascii'))
+                sendContacts = json_[username]
+                print(sendContacts)
+                for contact in sendContacts:
+                    print(contact)
+                    client.send(contact.encode('ascii'))
+                client.send("DONE!".encode('ascii'))
         except Exception as e:
             print("ERROR: " + str(e))
             client.close()
