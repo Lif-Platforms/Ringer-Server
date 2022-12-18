@@ -25,7 +25,7 @@ try:
     from pydoc import cli
     from random import randint, randrange
     import yaml
-    from subprocess import PIPE, STDOUT, Popen
+    from subprocess import call
     from nylas import APIClient
 except Exception as e:
     print(Fore.RED + "Failed to import libraries! Exception:", e)
@@ -34,7 +34,12 @@ except Exception as e:
 global serverOnline
 serverOnline = False
 
-Swares = ["shit", "fuck", "bitch", "gay", "ass", "dick", "pussy ", 'hell ', "crap", "nigger ", "douchebag", "penis", "sod ", 'bugger', "arse", "bint", "munter", "minger", "balls", "arsehole", "pissed", "bollocks", "bellend", "tit", "fanny", "snatch", "clunge", "gash", "prick", "twat", "punani", "minge", "cock", "bastard", "wanker", "cunt", "hoe"]
+Swares = []
+
+with open("Swares.json", "r") as file:
+    content = file.read()
+    json_ = json.loads(content)
+    Swares = json_["Swares"]
  
 global current_time
 
@@ -105,33 +110,18 @@ for file in onlyfiles:
 ringer.log("Detected plugins: " + str(onlyfiles))
 
 def plugin_thread(file):
-    args = "RingerPlugins/" + file
-    processes.append(file)
-    global shutdown
-    p = subprocess.Popen(['python', args])
-    output, error_ = p.communicate()
-    if not error_:
-        print(output) 
-    else:
-        p.terminate()
-        ringer.error(f"Plugin {file} was terminated due to an error. It wrote:")
-        print(error_)
-    
-    while True:
-        if shutdown == True:
-            ringer.log("Shut down process: " + file)
-            processes.remove(file)
-            p.terminate() 
-        
-        
-     #exec(open(pluginpath + file).read())
+    print(file)
+    args = f"RingerPlugins/{file}"
+
+    call(["python", args]) 
+    #exec(open(pluginpath + file).read())
     
 
 for file in onlyfiles:
     ringer.log(f"Started Plugin: {file}...")
+    args = "RingerPlugins/" + file
     pluginThread = threading.Thread(target=plugin_thread, args=(file,))
     pluginThread.start()
-
 
 global conn
 global c
