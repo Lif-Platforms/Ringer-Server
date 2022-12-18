@@ -94,9 +94,7 @@ def connect():
             connect() 
 connect()
 
-
 ringer.log("Loading Plugins...")
-
 
 onlyfiles = os.listdir("RingerPlugins/")
 #onlyfiles = [f for f in listdir(pluginpath) if isfile(join(pluginpath, f))]

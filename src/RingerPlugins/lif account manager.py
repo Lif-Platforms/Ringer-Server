@@ -134,7 +134,9 @@ def handle(client, username):
                 for contact in sendContacts:
                     print(contact)
                     client.send(contact.encode('ascii'))
+                    time.sleep(0.001)
                 client.send("DONE!".encode('ascii'))
+                print("Told client 'DONE!'")
         except Exception as e:
             print("ERROR: " + str(e))
             client.close()
@@ -185,6 +187,3 @@ def recive(): #handles receiving connections and login
             ringer.error(e)
 
 recive()
-
-
-        
