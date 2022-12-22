@@ -72,7 +72,7 @@ def handle(client, username):
                         print("found account")
                         break
                 '''
-                file = open("contacts.json", "r")
+                file = open("JsonFiles/contacts.json", "r")
                 print("opened file")
                 content = file.read()
                 print(content)
@@ -107,11 +107,11 @@ def handle(client, username):
                             WHERE Username = '{username}'""")
                 '''
 
-                with open("contacts.json", "r") as file:
+                with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
                     json_ = json.loads(content)
                     file.close() 
-                with open("contacts.json", "w") as file:
+                with open("JsonFiles/contacts.json", "w") as file:
                     json_[username] = contacts
                     file.write(json.dumps(json_))
                     file.close() 
@@ -124,7 +124,7 @@ def handle(client, username):
                 #conn3.close()
 
             if message == "LIST_DM":
-                with open("contacts.json", "r") as file:
+                with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
                     json_ = json.loads(content)
                     file.close() 
