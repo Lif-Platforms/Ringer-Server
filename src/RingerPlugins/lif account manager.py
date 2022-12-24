@@ -124,19 +124,24 @@ def handle(client, username):
                 #conn3.close()
 
             if message == "LIST_DM":
+                addUser = False 
                 with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
                     json_ = json.loads(content)
                     file.close() 
+                    if username not in json_:
+                        addUser = True 
+
+                if addUser:
+                    json_.update({username:""})
                 print(content)
-                sendContacts = json_[username]
+                Contacts = json_[username]
+                sendContacts = json.dumps({"sentContacts": Contacts}) 
                 print(sendContacts)
-                for contact in sendContacts:
-                    print(contact)
-                    client.send(contact.encode('ascii'))
-                    time.sleep(0.001)
-                client.send("DONE!".encode('ascii'))
-                print("Told client 'DONE!'")
+                    
+                client.send(sendContacts.encode('ascii'))
+                #client.send("DONE!".encode('ascii'))
+                #print("Told client 'DONE!'")
         except Exception as e:
             print("ERROR: " + str(e))
             client.close()
