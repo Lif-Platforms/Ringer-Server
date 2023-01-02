@@ -52,26 +52,19 @@ def handle(client, username):
  
                 print("Name: " + insertName)
 
-                '''
+                #establishes a connection with the database and creates a cursor
                 conn2 = sqlite3.connect('account.db')
                 c2 = conn2.cursor()
 
+                
+                #fetches all lines from database 
                 c2.execute("SELECT * FROM accounts")
                 items = c2.fetchall()
-
-                conn2.close()
-                '''
+                
                 #contacts = []
                 
                 '''
-                for item in items:
-                    findUser = item[0]
-                    print(item)
-                    if findUser == username:
-                        contacts = list(item[3])
-                        print("found account")
-                        break
-                '''
+                
                 file = open("JsonFiles/contacts.json", "r")
                 print("opened file")
                 content = file.read()
@@ -98,15 +91,32 @@ def handle(client, username):
                 print(contacts)
                 print(username)
 
-                #conn3 = sqlite3.connect('account.db')
-                #c3 = conn3.cursor()
+                #conn2 = sqlite3.connect('account.db')
+                #c2 = conn3.cursor()
                 #print("connected to database")
+                '''
+                for item in items:
+                    findUser = item[0]
+                    print(item)
+                    if findUser == username:
+                        contacts = json.loads(item[3])
+                        print("found account")
+                        break
+
+                print(contacts)
+
+                contactsList = contacts['contacts']
+
+                print(contactsList)
+                contactsList.append(insertName) 
+                print(contactsList)
+
+                toDump = {"contacts":contactsList}
+                
+                c2.execute(f"""UPDATE accounts SET contacts = '{json.dumps(toDump)}'
+                            WHERE Username = '{username}'""")
                 
                 '''
-                c3.execute(f"""UPDATE accounts SET contacts = '{str(contacts)}'
-                            WHERE Username = '{username}'""")
-                '''
-
                 with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
                     json_ = json.loads(content)
@@ -116,14 +126,13 @@ def handle(client, username):
                     file.write(json.dumps(json_))
                     file.close() 
                 print('updated dm in contacts')
-
+                '''
+                conn2.commit()
+                conn2.close()
                 client.send('SUCCESS!'.encode('ascii'))
 
-                #c3.commit()
-
-                #conn3.close()
-
             if message == "LIST_DM":
+                '''
                 addUser = False 
                 with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
@@ -136,10 +145,27 @@ def handle(client, username):
                     json_.update({username:""})
                 print(content)
                 Contacts = json_[username]
-                sendContacts = json.dumps({"sentContacts": Contacts}) 
+                '''
+                conn3 = sqlite3.connect('account.db')
+                c3 = conn3.cursor()
+
+                
+                #fetches all lines from database 
+                c3.execute("SELECT * FROM accounts")
+                items = c3.fetchall()
+
+                for item in items:
+                    findUser = item[0]
+                    print(item)
+                    if findUser == username:
+                        contacts = json.loads(item[3])
+                        print("found account")
+                        break
+                sendContacts = json.dumps(contacts)
                 print(sendContacts)
                     
                 client.send(sendContacts.encode('ascii'))
+                conn3.close() 
                 #client.send("DONE!".encode('ascii'))
                 #print("Told client 'DONE!'")
         except Exception as e:

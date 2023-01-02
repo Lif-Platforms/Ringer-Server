@@ -283,7 +283,7 @@ def recive(conn, c):
                         break
                 
                 if continueCreation == True:
-                    data = (username, password, email, '[]')
+                    data = (username, password, email, '{"contacts":[]}')
 
                     c.execute(f"INSERT INTO accounts VALUES (?,?,?,?)", data)
                     print('executed data')
