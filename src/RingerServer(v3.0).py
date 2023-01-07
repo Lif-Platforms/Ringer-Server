@@ -36,7 +36,7 @@ serverOnline = False
 
 Swares = []
 
-with open("Swares.json", "r") as file:
+with open("JsonFiles/Swares.json", "r") as file:
     content = file.read()
     json_ = json.loads(content)
     Swares = json_["Swares"]
@@ -94,12 +94,11 @@ def connect():
             connect() 
 connect()
 
-
 ringer.log("Loading Plugins...")
-
 
 onlyfiles = os.listdir("RingerPlugins/")
 #onlyfiles = [f for f in listdir(pluginpath) if isfile(join(pluginpath, f))]
+
 
 for file in onlyfiles:
     if not file.endswith(".py"):
@@ -284,7 +283,7 @@ def recive(conn, c):
                         break
                 
                 if continueCreation == True:
-                    data = (username, password, email, '[]')
+                    data = (username, password, email, '{"contacts":[]}')
 
                     c.execute(f"INSERT INTO accounts VALUES (?,?,?,?)", data)
                     print('executed data')

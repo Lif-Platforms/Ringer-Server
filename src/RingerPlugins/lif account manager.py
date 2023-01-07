@@ -52,27 +52,20 @@ def handle(client, username):
  
                 print("Name: " + insertName)
 
-                '''
+                #establishes a connection with the database and creates a cursor
                 conn2 = sqlite3.connect('account.db')
                 c2 = conn2.cursor()
 
+                
+                #fetches all lines from database 
                 c2.execute("SELECT * FROM accounts")
                 items = c2.fetchall()
-
-                conn2.close()
-                '''
+                
                 #contacts = []
                 
                 '''
-                for item in items:
-                    findUser = item[0]
-                    print(item)
-                    if findUser == username:
-                        contacts = list(item[3])
-                        print("found account")
-                        break
-                '''
-                file = open("contacts.json", "r")
+                
+                file = open("JsonFiles/contacts.json", "r")
                 print("opened file")
                 content = file.read()
                 print(content)
@@ -98,43 +91,176 @@ def handle(client, username):
                 print(contacts)
                 print(username)
 
-                #conn3 = sqlite3.connect('account.db')
-                #c3 = conn3.cursor()
+                #conn2 = sqlite3.connect('account.db')
+                #c2 = conn3.cursor()
                 #print("connected to database")
+                '''
+                for item in items:
+                    findUser = item[0]
+                    print(item)
+                    if findUser == username:
+                        contacts = json.loads(item[3])
+                        print("found account")
+                        break
+
+                print(contacts)
+
+                contactsList = contacts['contacts']
+
+                print(contactsList)
+                contactsList.append(insertName) 
+                print(contactsList)
+
+                toDump = {"contacts":contactsList}
+                
+                c2.execute(f"""UPDATE accounts SET contacts = '{json.dumps(toDump)}'
+                            WHERE Username = '{username}'""")
                 
                 '''
-                c3.execute(f"""UPDATE accounts SET contacts = '{str(contacts)}'
-                            WHERE Username = '{username}'""")
-                '''
-
-                with open("contacts.json", "r") as file:
+                with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
                     json_ = json.loads(content)
                     file.close() 
-                with open("contacts.json", "w") as file:
+                with open("JsonFiles/contacts.json", "w") as file:
                     json_[username] = contacts
                     file.write(json.dumps(json_))
                     file.close() 
                 print('updated dm in contacts')
-
+                '''
+                conn2.commit()
+                conn2.close()
                 client.send('SUCCESS!'.encode('ascii'))
 
-                #c3.commit()
+            if message == "REMOVE_DM":
+                print('dm request recived')
+                client.send("DM_NAME?".encode('ascii'))
+                print('requested dm name')
+                name = client.recv(1024).decode('ascii')
 
-                #conn3.close()
+                insertName = name.replace("REMOVE_DM", "")
+ 
+                print("Name: " + insertName)
 
-            if message == "LIST_DM":
-                with open("contacts.json", "r") as file:
+                #establishes a connection with the database and creates a cursor
+                conn2 = sqlite3.connect('account.db')
+                c2 = conn2.cursor()
+
+                
+                #fetches all lines from database 
+                c2.execute("SELECT * FROM accounts")
+                items = c2.fetchall()
+                
+                #contacts = []
+                
+                '''
+                
+                file = open("JsonFiles/contacts.json", "r")
+                print("opened file")
+                content = file.read()
+                print(content)
+                data = json.loads(content)
+                print(data)
+                if username not in data:
+                    data.update({username:"[]"})
+                extractContacts = data[username]   
+                contacts = list(extractContacts)
+                def scanDatabase():
+                    for i in contacts:
+                        if i == "[":
+                            contacts.remove(i)
+                            scanDatabase()
+                        if i == "]":
+                            contacts.remove(i)
+                            scanDatabase()
+                scanDatabase()
+                contacts.append(str(insertName))
+                print(contacts)
+                file.close() 
+
+                print(contacts)
+                print(username)
+
+                #conn2 = sqlite3.connect('account.db')
+                #c2 = conn3.cursor()
+                #print("connected to database")
+                '''
+                for item in items:
+                    findUser = item[0]
+                    print(item)
+                    if findUser == username:
+                        contacts = json.loads(item[3])
+                        print("found account")
+                        break
+
+                print(contacts)
+
+                contactsList = contacts['contacts']
+
+                print(contactsList)
+                if insertName in contactsList:
+                    contactsList.remove(insertName) 
+                else:
+                    client.send("NO_USER".encode('ascii'))
+                    
+                print(contactsList)
+
+                toDump = {"contacts":contactsList}
+                
+                c2.execute(f"""UPDATE accounts SET contacts = '{json.dumps(toDump)}'
+                            WHERE Username = '{username}'""")
+                
+                '''
+                with open("JsonFiles/contacts.json", "r") as file:
                     content = file.read() 
                     json_ = json.loads(content)
                     file.close() 
+                with open("JsonFiles/contacts.json", "w") as file:
+                    json_[username] = contacts
+                    file.write(json.dumps(json_))
+                    file.close() 
+                print('updated dm in contacts')
+                '''
+                conn2.commit()
+                conn2.close()
+                client.send('SUCCESS!'.encode('ascii'))
+
+            if message == "LIST_DM":
+                '''
+                addUser = False 
+                with open("JsonFiles/contacts.json", "r") as file:
+                    content = file.read() 
+                    json_ = json.loads(content)
+                    file.close() 
+                    if username not in json_:
+                        addUser = True 
+
+                if addUser:
+                    json_.update({username:""})
                 print(content)
-                sendContacts = json_[username]
+                Contacts = json_[username]
+                '''
+                conn3 = sqlite3.connect('account.db')
+                c3 = conn3.cursor()
+
+                
+                #fetches all lines from database 
+                c3.execute("SELECT * FROM accounts")
+                items = c3.fetchall()
+
+                for item in items:
+                    findUser = item[0]
+                    print(item)
+                    if findUser == username:
+                        contacts = json.loads(item[3])
+                        print("found account")
+                        break
+                sendContacts = json.dumps(contacts)
                 print(sendContacts)
-                for contact in sendContacts:
-                    print(contact)
-                    client.send(contact.encode('ascii'))
-                client.send("DONE!".encode('ascii'))
+                    
+                client.send(sendContacts.encode('ascii'))
+                conn3.close() 
+                #client.send("DONE!".encode('ascii'))
+                #print("Told client 'DONE!'")
         except Exception as e:
             print("ERROR: " + str(e))
             client.close()
@@ -185,6 +311,3 @@ def recive(): #handles receiving connections and login
             ringer.error(e)
 
 recive()
-
-
-        
