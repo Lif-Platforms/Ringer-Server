@@ -131,6 +131,99 @@ def handle(client, username):
                 conn2.close()
                 client.send('SUCCESS!'.encode('ascii'))
 
+            if message == "REMOVE_DM":
+                print('dm request recived')
+                client.send("DM_NAME?".encode('ascii'))
+                print('requested dm name')
+                name = client.recv(1024).decode('ascii')
+
+                insertName = name.replace("REMOVE_DM", "")
+ 
+                print("Name: " + insertName)
+
+                #establishes a connection with the database and creates a cursor
+                conn2 = sqlite3.connect('account.db')
+                c2 = conn2.cursor()
+
+                
+                #fetches all lines from database 
+                c2.execute("SELECT * FROM accounts")
+                items = c2.fetchall()
+                
+                #contacts = []
+                
+                '''
+                
+                file = open("JsonFiles/contacts.json", "r")
+                print("opened file")
+                content = file.read()
+                print(content)
+                data = json.loads(content)
+                print(data)
+                if username not in data:
+                    data.update({username:"[]"})
+                extractContacts = data[username]   
+                contacts = list(extractContacts)
+                def scanDatabase():
+                    for i in contacts:
+                        if i == "[":
+                            contacts.remove(i)
+                            scanDatabase()
+                        if i == "]":
+                            contacts.remove(i)
+                            scanDatabase()
+                scanDatabase()
+                contacts.append(str(insertName))
+                print(contacts)
+                file.close() 
+
+                print(contacts)
+                print(username)
+
+                #conn2 = sqlite3.connect('account.db')
+                #c2 = conn3.cursor()
+                #print("connected to database")
+                '''
+                for item in items:
+                    findUser = item[0]
+                    print(item)
+                    if findUser == username:
+                        contacts = json.loads(item[3])
+                        print("found account")
+                        break
+
+                print(contacts)
+
+                contactsList = contacts['contacts']
+
+                print(contactsList)
+                if insertName in contactsList:
+                    contactsList.remove(insertName) 
+                else:
+                    client.send("NO_USER".encode('ascii'))
+                    
+                print(contactsList)
+
+                toDump = {"contacts":contactsList}
+                
+                c2.execute(f"""UPDATE accounts SET contacts = '{json.dumps(toDump)}'
+                            WHERE Username = '{username}'""")
+                
+                '''
+                with open("JsonFiles/contacts.json", "r") as file:
+                    content = file.read() 
+                    json_ = json.loads(content)
+                    file.close() 
+                with open("JsonFiles/contacts.json", "w") as file:
+                    json_[username] = contacts
+                    file.write(json.dumps(json_))
+                    file.close() 
+                print('updated dm in contacts')
+                '''
+                conn2.commit()
+                conn2.close()
+                client.send('SUCCESS!'.encode('ascii'))
+
             if message == "LIST_DM":
                 '''
                 addUser = False 
